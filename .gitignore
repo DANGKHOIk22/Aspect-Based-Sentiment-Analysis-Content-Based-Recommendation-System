@@ -1,0 +1,5 @@
+app
+logs
+.vscode
+config
+airflow-venv
