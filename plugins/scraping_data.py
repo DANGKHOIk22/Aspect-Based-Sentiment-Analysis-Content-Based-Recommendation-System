@@ -46,7 +46,7 @@ def fetch_data(execution_date=None,genre=None):
             logger.warning("No book elements found on genre page")
             return result
 
-        for book_element in book_elements[:35]:
+        for book_element in book_elements[:1]:
             book_url = book_element.get('href', '')
             if not book_url:
                 continue
@@ -128,14 +128,14 @@ def fetch_data(execution_date=None,genre=None):
 
 # def fetch_and_process_data(genres=None, **kwargs):
     
-#     genres = ['art']  
+#     genres = ['art','science','history']    
 
 #     all_data = []  
 #     for genre in genres:
 #         data = fetch_data(genre=genre)
 #         for d in data:
 #             all_data.append(d)
-#     print(all_data)
+#     print(all_data[:10])
     
 
 
