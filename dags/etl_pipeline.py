@@ -56,7 +56,18 @@ def transform_data():
 def load_data():
     df = transform_data()  # Get the transformed DataFrame
     warehouse_operator = PostgresOperators('postgres')
-    
+    ## Specify the path
+    directory = "data"
+    path = os.path.join(directory, "data.csv")
+
+    # Create the directory if it doesn't exist
+    os.chdir(PROJECT_ROOT)  # Use the project root defined earlier
+    directory = "data"
+    path = os.path.join(directory, "data.csv")
+    os.makedirs(directory, exist_ok=True)
+    df.to_csv(path, index=False)
+    print(f"Saving file to: {os.path.abspath(path)}")
+
     # Save to warehouse
     warehouse_operator.save_data_to_postgres(
         df,

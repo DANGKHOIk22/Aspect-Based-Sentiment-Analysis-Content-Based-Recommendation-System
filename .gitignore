@@ -3,3 +3,4 @@ logs
 .vscode
 config
 airflow-venv
+data

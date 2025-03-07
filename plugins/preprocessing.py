@@ -67,6 +67,6 @@ def preprocess_text(text):
 
 
 def preprocess(df):
-    df["sentence"] = df["sentence"].apply(preprocess_text)
+    df["Comment"] = df["Comment"].apply(preprocess_text)
     en_df = identify_en(df)
     return en_df
