@@ -9,7 +9,7 @@ from nltk.corpus import stopwords
 def identify_en(df):
     identifier = LanguageIdentifier.from_modelstring(model, norm_probs=True)
     not_en_idx = set()
-    THRESHOLD = 0.95
+    THRESHOLD = 0.99
     for idx, row in df.iterrows():
         score = identifier.classify(row["Comment"])
         if score[0] != "en" or (score[0] == "en" and score[1] <= THRESHOLD):

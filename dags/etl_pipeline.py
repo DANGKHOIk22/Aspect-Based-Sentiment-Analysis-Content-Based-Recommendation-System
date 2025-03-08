@@ -65,7 +65,7 @@ def load_data():
     directory = "data"
     path = os.path.join(directory, "data.csv")
     os.makedirs(directory, exist_ok=True)
-    df.to_csv(path, index=False)
+    df.to_csv(path, index=False, encoding='utf-8-sig', quoting=1)
     print(f"Saving file to: {os.path.abspath(path)}")
 
     # Save to warehouse
