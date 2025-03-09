@@ -17,29 +17,29 @@ This project uses DistilBERT, Conv1D, LSTM, and Transformer models for aspect pr
        - `etl_pipeline.py` : Execute ETL 
   - **`image/`**: workflow image
   - **`model/`**: 
-       - `Conv1D_LSTM_Transformer/`
+       - `Conv1D_LSTM_Transformer/`:
            - `aspect_prediction/` :
-               -  `model.py`: 
-               - `preprocess.py` :
-               - `train.py`:
+               -  `model.py`
+               - `preprocess.py` 
+               - `train.py`
            - `sentiment_classification/`:
-               -  `model.py`: 
-               - `preprocess.py` :
-               - `train.py`:
-        - `DistilBert/`
+               -  `model.py`
+               - `preprocess.py` 
+               - `train.py`
+        - `DistilBert/`:
            - `aspect_prediction/` :
-               -  `model.py`: 
-               - `preprocess.py` :
-               - `fine_tuned.py`:
+               -  `model.py`
+               - `preprocess.py` 
+               - `fine_tuned.py`
            - `sentiment_classification/`:
-               -  `model.py`: 
-               - `preprocess.py` :
-               - `fine_tuned.py`:
-               - `fine_tuned_with_scraped_data.py`:
+               -  `model.py`
+               - `preprocess.py` 
+               - `fine_tuned.py`
+               - `fine_tuned_with_scraped_data.py`
     - **`plugins/`**:
-        - `postgresql_operator.py`:
-        - `preprocessing.py`:
-        - `scaping_data.py`:
+        - `postgresql_operator.py`
+        - `preprocessing.py`
+        - `scaping_data.py`
 
 # Results:
   - `aspect_prediction`:
