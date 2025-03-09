@@ -14,8 +14,8 @@ This project uses DistilBERT, Conv1D, LSTM, and Transformer models for aspect pr
 
 # Main Folders:
   - **`dags/`**: 
-       - `etl_pipeline.py` : Execute ETL 
-  - **`image/`**: workflow image
+       - `etl_pipeline.py` : 
+  - **`image/`**: 
   - **`model/`**: 
        - `Conv1D_LSTM_Transformer/`:
            - `aspect_prediction/` :
