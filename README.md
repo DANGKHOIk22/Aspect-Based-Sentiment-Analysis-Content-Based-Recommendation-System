@@ -5,7 +5,7 @@
 This project uses DistilBERT, Conv1D, LSTM, and Transformer models for aspect prediction and sentiment classification. It then utilizes DistilBERT to predict the aspect of the scraped data, fine-tunes it, and performs sentiment classification.
 # Workflow:
 <div style="text-align: center;">
-    <img src="https://raw.githubusercontent.com/DANGKHOIk22/Project-Aspect-Sentiment-Analysis/refs/heads/main/image/Screenshot%202025-03-09%20133320.png?token=GHSAT0AAAAAAC5VVM53MEOVWRRJ4HQ7HT6UZ6NISYA" width="700"/>
+    <img src="https://github.com/DANGKHOIk22/Project-Aspect-Sentiment-Analysis/blob/main/image/Screenshot%202025-03-09%20133320.png?raw=true" width="700"/>
 </div>
 
 # Dataset:
