@@ -4,6 +4,9 @@
 
 This project uses DistilBERT, Conv1D, LSTM, and Transformer models for aspect prediction and sentiment classification. It then utilizes DistilBERT to predict the aspect of the scraped data, fine-tunes it, and performs sentiment classification.
 # Workflow:
+<div style="text-align: center;">
+    <img src="https://github.com/DANGKHOIk22/Project-Aspect-Sentiment-Analysis/blob/main/image/Screenshot%202025-03-09%20133320.png?raw=true" width="700"/>
+</div>
 
 # Dataset:
   - [Hugging Face Dataset](https://huggingface.co/datasets/thainq107/abte-restaurants)
@@ -11,32 +14,32 @@ This project uses DistilBERT, Conv1D, LSTM, and Transformer models for aspect pr
 
 # Main Folders:
   - **`dags/`**: 
-       - `etl_pipeline.py` : Execute ETL 
-  - **`image/`**: workflow image
+       - `etl_pipeline.py` : 
+  - **`image/`**: 
   - **`model/`**: 
-       - `Conv1D_LSTM_Transformer/`
+       - `Conv1D_LSTM_Transformer/`:
            - `aspect_prediction/` :
-               -  `model.py`: 
-               - `preprocess.py` :
-               - `train.py`:
+               -  `model.py`
+               - `preprocess.py` 
+               - `train.py`
            - `sentiment_classification/`:
-               -  `model.py`: 
-               - `preprocess.py` :
-               - `train.py`:
-        - `DistilBert/`
+               -  `model.py`
+               - `preprocess.py` 
+               - `train.py`
+        - `DistilBert/`:
            - `aspect_prediction/` :
-               -  `model.py`: 
-               - `preprocess.py` :
-               - `fine_tuned.py`:
+               -  `model.py`
+               - `preprocess.py` 
+               - `fine_tuned.py`
            - `sentiment_classification/`:
-               -  `model.py`: 
-               - `preprocess.py` :
-               - `fine_tuned.py`:
-               - `fine_tuned_with_scraped_data.py`:
+               -  `model.py`
+               - `preprocess.py` 
+               - `fine_tuned.py`
+               - `fine_tuned_with_scraped_data.py`
     - **`plugins/`**:
-        - `postgresql_operator.py`:
-        - `preprocessing.py`:
-        - `scaping_data.py`:
+        - `postgresql_operator.py`
+        - `preprocessing.py`
+        - `scaping_data.py`
 
 # Results:
   - `aspect_prediction`:
