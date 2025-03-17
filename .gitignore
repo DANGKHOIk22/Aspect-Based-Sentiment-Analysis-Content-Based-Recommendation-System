@@ -1,7 +1,6 @@
-app
 logs
-.vscode
 config
 airflow-venv
 data
 sql
+dags

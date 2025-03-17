@@ -40,7 +40,7 @@ def extract_data(**kwargs):
         df,
         "stg_data",
         schema='staging',
-        if_exists='replace'
+        if_exists='append'
     )
 
 def transform_data():
@@ -73,7 +73,7 @@ def load_data():
         df,
         "sentiment_data",
         schema='warehouse',
-        if_exists='replace'
+        if_exists='append'
     )
 
 # Define the DAG
