@@ -232,7 +232,7 @@ services:
     depends_on:
       - backend
     env_file:
-      - ./frontend/.env  # Assuming .env is in the frontend directory
+      - ./frontend/.env  
     restart: on-failure
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
