@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/ed26145e-1683-43f5-9070-547569cb4bd4)# Project-Aspect-Sentiment-Analysis
+# Project-Aspect-Sentiment-Analysis
 
 # Overview:
 
