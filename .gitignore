@@ -3,4 +3,6 @@ config
 airflow-venv
 data
 sql
+__pycache__
+vscode
 dags

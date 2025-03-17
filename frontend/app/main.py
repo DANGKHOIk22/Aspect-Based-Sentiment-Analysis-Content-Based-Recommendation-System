@@ -1,24 +1,6 @@
 import streamlit as st
 from api import predict
 import pandas as pd
-#from plugins.postgresql_operator import PostgresOperators
-#from plugins.preprocessing import preprocess
-# st.set_page_config(
-#     page_title="Sentiment Analysis",
-#     page_icon=":chart_with_upwards_trend:",
-#     layout="wide",
-#     initial_sidebar_state='auto'
-# )
-# def database(data):
-#     warehouse_operator = PostgresOperators('postgres')
-#     df = pd.DataFrame(data, columns=['Sentiment', 'Comment'])
-#     warehouse_operator.save_data_to_postgres(
-#         df,
-#         "sentiment_data",
-#         schema='warehouse',
-#         if_exists='append'
-#     )
-
 
 st.markdown(
     """
