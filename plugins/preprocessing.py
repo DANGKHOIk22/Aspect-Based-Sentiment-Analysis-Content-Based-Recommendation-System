@@ -9,9 +9,9 @@ from nltk.corpus import stopwords
 def identify_en(df):
     identifier = LanguageIdentifier.from_modelstring(model, norm_probs=True)
     not_en_idx = set()
-    THRESHOLD = 0.99
+    THRESHOLD = 0.95
     for idx, row in df.iterrows():
-        score = identifier.classify(row["Comment"])
+        score = identifier.classify(row["comment_text"])
         if score[0] != "en" or (score[0] == "en" and score[1] <= THRESHOLD):
             not_en_idx.add(idx)
     en_df = df[~df.index.isin(not_en_idx)]
@@ -67,6 +67,6 @@ def preprocess_text(text):
 
 
 def preprocess(df):
-    df["Comment"] = df["Comment"].apply(preprocess_text)
+    df["comment_text"] = df["comment_text"].apply(preprocess_text)
     en_df = identify_en(df)
     return en_df

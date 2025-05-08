@@ -1,10 +1,12 @@
 import requests
 from bs4 import BeautifulSoup
-import os
+import os,sys
 import logging
 from time import sleep
 from datetime import datetime
-
+import re
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(PROJECT_ROOT)
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
@@ -26,7 +28,7 @@ def fetch_page(url, headers, retries=3, delay=2):
             continue
     raise requests.RequestException(f"Failed to fetch {url} after {retries} attempts")
 
-def fetch_data(execution_date=None,genre=None):
+def fetch_data(idx,genre, num_books = 15):
 
     url = f'https://www.goodreads.com/genres/{genre}'
     headers = {
@@ -34,6 +36,8 @@ def fetch_data(execution_date=None,genre=None):
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'
     }
     result = []
+    image_dir = os.path.join(PROJECT_ROOT, "image")
+    os.makedirs(image_dir, exist_ok=True)
     
     try:
         logger.info(f"Fetching genre page: {url}")
@@ -46,7 +50,7 @@ def fetch_data(execution_date=None,genre=None):
             logger.warning("No book elements found on genre page")
             return result
 
-        for book_element in book_elements[:35]:
+        for book_ids,book_element in enumerate(book_elements[:num_books]):
             book_url = book_element.get('href', '')
             if not book_url:
                 continue
@@ -58,12 +62,63 @@ def fetch_data(execution_date=None,genre=None):
             try:
                 book_response = fetch_page(book_url, headers)
                 book_soup = BeautifulSoup(book_response.content, "html.parser")
+                image_tag = book_soup.find("img", class_="ResponsiveImage")
+                if image_tag and image_tag.get("src"):
+                    image_url = image_tag["src"]
+                response = requests.get(image_url)
+                image_name = f'{idx*num_books + book_ids}.jpg'
+                path = os.path.join(image_dir, image_name)
+                if response.status_code == 200:
+                    with open(path, 'wb') as f:
+                        f.write(response.content)
+                title_tag = book_soup.find("h1", {"data-testid": "bookTitle"})
+                book_title = title_tag.get_text(strip=True) if title_tag else None
+
+                details_section = book_soup.find("div", class_="BookDetails")
+                pages = None
+
+                if details_section:
+                    pages_format_tag = details_section.find("p", {"data-testid": "pagesFormat"})
+                    if pages_format_tag:
+                        pages_text = pages_format_tag.get_text(strip=True)
+
+                try:
+                    if pages_text:
+                        pages = int(pages_text.split()[0])
+                except ValueError:
+                    pages = None
                 
                 # Find review section
                 review_section = book_soup.find("div", class_="ReviewsSection")
                 if not review_section:
                     logger.warning(f"No reviews section found for {book_url}")
                     continue
+                # Extract overall rating
+                rating_tag = review_section.find("div", class_="RatingStatistics__rating")
+                rating = float(rating_tag.get_text(strip=True)) if rating_tag else None
+
+                # Extract ratings and reviews count
+                meta_div = review_section.find("div", class_="RatingStatistics__meta")
+                if meta_div:
+                    ratings_span = meta_div.find("span", {"data-testid": "ratingsCount"})
+                    reviews_span = meta_div.find("span", {"data-testid": "reviewsCount"})
+
+                    if ratings_span:
+                        ratings_text = ratings_span.get_text(strip=True)
+                        match = re.search(r'\d+', ratings_text)
+                        ratings_count = int(match.group()) if match else 0
+                    else:
+                        ratings_count = 0
+                    if reviews_span:
+                        reviews_text = reviews_span.get_text(strip=True)
+                        match = re.search(r'\d+', reviews_text)
+                        reviews_count = int(match.group()) if match else 0
+                    else:
+                        reviews_count = 0
+                else:
+                    ratings_count = 0
+                    reviews_count = 0
+
 
                 # Extract reviews
                 review_cards = review_section.find_all("article", class_="ReviewCard")
@@ -71,16 +126,8 @@ def fetch_data(execution_date=None,genre=None):
                     logger.warning(f"No review cards found for {book_url}")
                     continue
 
-                for review_card in review_cards:
+                for review_card in review_cards[:10]:
                     try:
-                        # Extract rating
-                        rating_span = review_card.find("span", class_="RatingStars RatingStars__small")
-                        if not rating_span or 'aria-label' not in rating_span.attrs:
-                            continue
-                        
-                        rating_text = rating_span['aria-label']
-                        star_num = int(next(filter(str.isdigit, rating_text)))
-
                         # Extract comment
                         comment_span = review_card.find("span", class_="Formatted")
                         if not comment_span:
@@ -91,24 +138,9 @@ def fetch_data(execution_date=None,genre=None):
                             continue
                         comment_text = ' '.join(comment_text.split()[:51])
 
-                        # Extract date time
-                        date_span = review_card.find("span", class_="Text Text__body3")
                         
-                        if not date_span:
-                            continue
-                        date_text = date_span.find("a").text
-                        
-                        date_obj = datetime.strptime(date_text, "%B %d, %Y")
-                        if (execution_date != None) and (date_obj.date() != execution_date.date()):
-                            continue
-                        
-                        # Categorize review
-                        if star_num in [1, 2]:
-                            result.append(("Negative", comment_text))
-                        elif star_num == 3:
-                            result.append(("Neutral", comment_text))
-                        elif star_num in [4, 5]:
-                            result.append(("Positive", comment_text))
+                        result.append((idx*num_books + book_ids,book_title,genre, pages,rating, ratings_count, reviews_count, comment_text))
+   
                             
                     except (ValueError, AttributeError) as e:
                         logger.error(f"Error processing review in {book_url}: {e}")
@@ -126,29 +158,4 @@ def fetch_data(execution_date=None,genre=None):
     return result
 
 
-# def fetch_and_process_data(genres=None, **kwargs):
-    
-#     genres = ['art','science','history']    
 
-#     all_data = []  
-#     for genre in genres:
-#         data = fetch_data(genre=genre)
-#         for d in data:
-#             all_data.append(d)
-#     print(all_data[:10])
-    
-
-
-
-# if __name__ == "__main__":
-#     try:
-#         #results = fetch_data()
-#         fetch_and_process_data()
-
-#         #logger.info(f"Collected {len(results)} reviews")
-#         # for i, review in enumerate(results[:5], 1):  # Show first 5 reviews
-        
-#         #     print(f"Review {i}: {review}")
-        
-#     except Exception as e:
-#         print(f"Failed to complete scraping: {e}")

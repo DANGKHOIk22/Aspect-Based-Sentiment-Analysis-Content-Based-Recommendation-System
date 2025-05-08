@@ -1,6 +1,5 @@
 from fastapi import APIRouter
-from app.api.routes.classify_sentiment import router as btc_router
-# from app.api.v1.routes.predict_gold import router as gold_router
+from app.api.routes.recommend_system import router as btc_router
 
 router = APIRouter()
 

@@ -46,7 +46,7 @@
 ---
 x-airflow-common:
   &airflow-common
-  image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:2.10.4}
+  image: user3437721/airflow:custom
   build:
     context: .
     dockerfile: Dockerfile
@@ -66,13 +66,14 @@ x-airflow-common:
     - ${AIRFLOW_PROJ_DIR:-.}/logs:/opt/airflow/logs
     - ${AIRFLOW_PROJ_DIR:-.}/config:/opt/airflow/config
     - ${AIRFLOW_PROJ_DIR:-.}/plugins:/opt/airflow/plugins
+    - ${AIRFLOW_PROJ_DIR:-.}/image:/opt/airflow/image
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
     &airflow-common-depends-on
     postgres:
       condition: service_healthy
-  networks:
-    - mlops_net
+  # networks:
+  #   - mlops_net
 
 services:
   postgres:
@@ -91,8 +92,8 @@ services:
       retries: 5
       start_period: 5s
     restart: always
-    networks:
-      - mlops_net
+    # networks:
+    #   - mlops_net
 
   airflow-webserver:
     <<: *airflow-common
@@ -203,47 +204,47 @@ services:
       - bash
       - -c
       - airflow
-
-  backend:
-    build:
-      context: ./backend
-    container_name: backend_cont
-    networks:
-      - mlops_net
-    ports:
-      - 8000:8000
-    entrypoint: "uvicorn app.main:app --host 0.0.0.0 --port 8000"
-    restart: on-failure
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
-
-  frontend:
-    build:
-      context: ./frontend
-    container_name: frontend_cont
-    networks:
-      - mlops_net
-    ports:
-      - 3000:3000
-    depends_on:
-      - backend
-    env_file:
-      - ./frontend/.env  # Assuming .env is in the frontend directory
-    restart: on-failure
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
-
 volumes:
   postgres-db-volume:
+  # backend:
+  #   build:
+  #     context: ./backend
+  #   container_name: backend_cont
+  #   networks:
+  #     - mlops_net
+  #   ports:
+  #     - 8000:8000
+  #   entrypoint: "uvicorn app.main:app --host 0.0.0.0 --port 8000"
+  #   restart: on-failure
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+  #     start_period: 10s
 
-networks:
-  mlops_net:
-    driver: bridge
+  # frontend:
+  #   build:
+  #     context: ./frontend
+  #   container_name: frontend_cont
+  #   networks:
+  #     - mlops_net
+  #   ports:
+  #     - 3000:3000
+  #   depends_on:
+  #     - backend
+  #   env_file:
+  #     - ./frontend/.env  # Assuming .env is in the frontend directory
+  #   restart: on-failure
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+  #     start_period: 10s
+
+
+
+# networks:
+#   mlops_net:
+#     driver: bridge
