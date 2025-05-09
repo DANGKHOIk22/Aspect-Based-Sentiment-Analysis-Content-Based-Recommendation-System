@@ -114,5 +114,5 @@ Books are recommended using:
 ### 🔧 Local Setup
 
 ```bash
-git clone https://github.com/DANGKHOIk22/aspect-sentiment-recommender.git
+git clone https://github.com/DANGKHOIk22/Aspect-Based-Sentiment-Analysis-Content-Based-Recommendation-System.git
 pip install -r requirements.txt
