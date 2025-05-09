@@ -24,7 +24,7 @@ This project applies advanced NLP techniques to perform **aspect-based sentiment
 - Data sourced from Hugging Face and web-scraped Goodreads
 
 <div align="center">
-  <img src="image/Screenshot 2025-05-09 132341.png" alt="Workflow Diagram" width="600">
+  <img src="Screenshot 2025-05-09 132341.png" alt="Workflow Diagram" width="600">
 </div>
 
 ---
@@ -103,9 +103,8 @@ Books are recommended using:
 
 ## 🎥 Demo
 
-A video walkthrough of the ETL pipeline using Airflow and overall system in action:
+[![Watch the demo](https://img.youtube.com/vi/YOUTUBE_VIDEO_ID/0.jpg)](https://www.youtube.com/watch?v=rap2EdqjEFI)
 
-📂 Demo file: `image/2025-05-08 11-05-41.mp4`  
 
 
 ---
