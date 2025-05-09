@@ -1,58 +1,120 @@
-# Project-Aspect-Sentiment-Analysis
+# 📘 Aspect-Based Sentiment Analysis & Content-Based Recommendation System
 
-# Overview:
+This project applies advanced NLP techniques to perform **aspect-based sentiment analysis (ABSA)** on user comments and uses the results to build a **content-based book recommendation system**. The goal is to analyze sentiment at a fine-grained level and suggest relevant books based on user preferences.
 
-This project uses DistilBERT, Conv1D, LSTM, and Transformer models for aspect prediction and sentiment classification. It then utilizes DistilBERT to predict the aspect of the scraped data, fine-tunes it, and performs sentiment classification.
-# Workflow:
-<div style="text-align: center;">
-    <img src="https://github.com/DANGKHOIk22/Project-Aspect-Sentiment-Analysis/blob/main/image/Screenshot%202025-03-17%20101657.png?raw=true" width="700"/>
+---
+
+## 📌 Table of Contents
+
+- [Overview](#overview)
+- [Architecture](#architecture)
+- [Dataset](#dataset)
+- [Methodology](#methodology)
+- [Results](#results)
+- [Demo](#demo)
+- [Installation](#installation)
+
+---
+
+## 🔍 Overview
+
+- Fine-grained sentiment analysis on comments (aspect-level classification)
+- Models include Conv1D, LSTM, Transformer, DistilBERT, and LLaMA
+- Book recommendation system based on comment sentiment + metadata
+- Data sourced from Hugging Face and web-scraped Goodreads
+
+<div align="center">
+  <img src="image/Screenshot 2025-05-09 132341.png" alt="Workflow Diagram" width="600">
 </div>
 
-# Dataset:
-  - [Hugging Face Dataset](https://huggingface.co/datasets/thainq107/abte-restaurants)
-  - Scarping data from [Goodreads](https://www.goodreads.com/)
+---
 
-# Main Folders:
-  - **`dags/`**: 
-       - `etl_pipeline.py` : 
-  - **`image/`**: 
-  - **`model/`**: 
-       - `Conv1D_LSTM_Transformer/`:
-           - `aspect_prediction/` :
-               -  `model.py`
-               - `preprocess.py` 
-               - `train.py`
-           - `sentiment_classification/`:
-               -  `model.py`
-               - `preprocess.py` 
-               - `train.py`
-        - `DistilBert/`:
-           - `aspect_prediction/` :
-               -  `model.py`
-               - `preprocess.py` 
-               - `fine_tuned.py`
-           - `sentiment_classification/`:
-               -  `model.py`
-               - `preprocess.py` 
-               - `fine_tuned.py`
-               - `fine_tuned_with_scraped_data.py`
-    - **`plugins/`**:
-        - `postgresql_operator.py`
-        - `preprocessing.py`
-        - `scaping_data.py`
+## 🏗️ Architecture
 
-# Results:
-  - `aspect_prediction`:
-     - `Conv1D` :[Hugging_face](https://huggingface.co/Khoivudang1209/abte-restaurants-conv1d)
-     - `LSTM` :[Hugging_face](https://huggingface.co/Khoivudang1209/abte-restaurants-lstm)
-     - `Transformer` :[Hugging_face](https://huggingface.co/Khoivudang1209/abte-restaurants-transformer)
-     - `DistilBert` :[Hugging_face](https://huggingface.co/Khoivudang1209/abte-restaurants-distilbert-base-uncased)
-  - `sentiment_classification`:
-     - `Conv1D` :[Hugging_face](https://huggingface.co/Khoivudang1209/abte-restaurants-sentiment-conv1d)
-     - `LSTM` :[Hugging_face](https://huggingface.co/Khoivudang1209/abte-restaurants-sentiment-lstm)
-     - `Transformer` :[Hugging_face](https://huggingface.co/Khoivudang1209/abte-restaurants-sentiment-transformer)
-     - `DistilBert` :[Hugging_face](https://huggingface.co/Khoivudang1209/abte-restaurants-sentiment-distilbert)
-  - `sentiment_classification fine-tuned with scraped_data`:
-     - `DistilBert`:[Hugging_face](https://huggingface.co/Khoivudang1209/absa-restaurants-albert-base-v2)
+This project follows a full-stack machine learning pipeline:
 
-     
+- **Airflow** orchestrates the ETL process (Dockerized):
+  - Extracts and processes Goodreads data
+  - Cleans and formats text and metadata
+  - Loads the structured output into **PostgreSQL** (Dockerized)
+- **PostgreSQL** stores book and comment data
+- **Model training** reads from the database and saves results locally
+- **FastAPI** serves trained models via RESTful endpoints (run locally)
+- **Streamlit** offers an interactive web UI for sentiment prediction and recommendations (run locally)
+- **Docker** is used to containerize and manage Airflow and PostgreSQL only
+
+---
+
+## 📁 Dataset
+
+### 1. [ABSA Dataset (Hugging Face)](https://huggingface.co/datasets/thainq107/abte-restaurants)
+- `tokens`: Tokenized input sentences  
+- `tags`: Aspect tags in IOB format  
+- `polarities`: Sentiment labels (positive/neutral/negative)  
+
+### 2. Goodreads Web-Scraped Data
+- `book_id`, `book_title`, `genre`, `pages`  
+- `rating`, `ratings_count`, `reviews_count`  
+- `comment_text`: Raw user comment text  
+
+---
+
+## 🧠 Methodology
+
+### 🔸 Aspect Sentiment Models:
+- **Conv1D / LSTM / Transformer**:  
+  Used for aspect tagging and comment-level sentiment classification
+
+- **DistilBERT**:  
+  Combines aspect tagging with `<SEP>` and comment-level classification for better performance
+
+- **LLaMA-3.2-1B-Instruct**:  
+  Fine-tuned with instruction-style prompts for direct sentiment inference
+
+### 🔹 Content-Based Recommendation
+Books are recommended using:
+- Genre similarity  
+- Page count proximity  
+- Rating and review count  
+- Extracted sentiment from user comments
+
+### 🔄 ETL Pipeline (Airflow)
+- Scheduled DAGs:
+  - Scrape Goodreads data
+  - Clean & transform comment text
+  - Save to PostgreSQL
+- DAGs are containerized via Docker and monitored via Airflow UI
+
+---
+
+## 📈 Results
+
+| **Model**               | **Accuracy** |
+|-------------------------|--------------|
+| Conv1D                  | 66.49%       |
+| LSTM                    | 62.56%       |
+| Transformer             | 63.36%       |
+| DistilBERT              | **81.50%**   |
+| LLaMA-3.2-1B-Instruct   | 25.36%       |
+
+> ✅ DistilBERT achieved the best performance for sentiment classification.
+
+---
+
+## 🎥 Demo
+
+A video walkthrough of the ETL pipeline using Airflow and overall system in action:
+
+📂 Demo file: `image/2025-05-08 11-05-41.mp4`  
+
+
+---
+
+## 🛠 Installation
+
+### 🔧 Local Setup
+
+```bash
+git clone https://github.com/yourusername/aspect-sentiment-recommender.git
+cd aspect-sentiment-recommender
+pip install -r requirements.txt

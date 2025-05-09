@@ -36,7 +36,7 @@ def preprocess_pipeline():
     max_len_tokens = max([len(tokens) for tokens in ds['train']['Tokens'] ])
     max_len_tags = max([ len([token  for token in tokens if token != '0']) for tokens in ds['train']['Tags'] ])
     global MAX_LEN
-    MAX_LEN = max_len_tokens + max_len_tags
+    MAX_LEN = max_len_tokens + '[SEP]'+  max_len_tags
 
     global tokenizer
     tokenizer = tokenize()
