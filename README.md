@@ -24,7 +24,7 @@ This project applies advanced NLP techniques to perform **aspect-based sentiment
 - Data sourced from Hugging Face and web-scraped Goodreads
 
 <div align="center">
-  <img src="Workflow.png" alt="Workflow Diagram" width="600">
+  <img src="Workflow.png" alt="Workflow Diagram" width="1000">
 </div>
 
 ---
